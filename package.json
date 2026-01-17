@@ -1,29 +1,49 @@
 {
   "name": "n8n-nodes-openmrs",
-  "version": "0.1.0",
-  "description": "n8n node for OpenMRS FHIR integration",
+  "version": "1.0.0",
+  "description": "n8n community node for seamless OpenMRS FHIR integration. Fetch patient demographics, encounters, observations, diagnostic reports, conditions, and medications through standardized FHIR R4 API endpoints.",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "n8n-node",
+    "openmrs",
+    "fhir",
+    "healthcare",
+    "ehr",
+    "emr",
+    "medical-records",
+    "clinical-data",
+    "health-informatics",
+    "interoperability",
+    "hl7-fhir",
+    "patient-data",
+    "oncology"
+  ],
   "license": "MIT",
-  "homepage": "https://github.commonfortbrian/n8n-nodes-openmrs",
+  "homepage": "https://github.com/monfortbrian/n8n-nodes-OpenMRS#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/monfortbrian/n8n-nodes-OpenMRS.git"
+  },
+  "bugs": {
+    "url": "https://github.com/monfortbrian/n8n-nodes-OpenMRS/issues"
+  },
   "author": {
     "name": "Monfort N. Brian",
     "email": "monfortnkurunziza0@gmail.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/monfortbrian/n8n-nodes-openmrs.git"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc && npm run copy-assets",
     "copy-assets": "node -p \"require('fs').cpSync('src/nodes/OpenMrs/OpenMrs.svg', 'dist/nodes/OpenMrs/OpenMrs.svg')\"",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
   },
   "files": [
-    "dist"
-  ],
-  "keywords": [
-    "n8n-community-node-package"
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
   "n8n": {
     "n8nNodesApiVersion": 1,
@@ -41,5 +61,8 @@
   "dependencies": {
     "n8n-core": "^1.122.9",
     "n8n-workflow": "^2.4.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

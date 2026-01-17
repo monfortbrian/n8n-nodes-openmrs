@@ -11,8 +11,8 @@ class OpenMrsApi {
         displayName: 'Base URL',
         name: 'baseUrl',
         type: 'string',
-        default: 'https://notyetset.com/openmrs',
-        placeholder: 'https://notyetset.com/openmrs',
+        default: 'https://demo.openmrs.org/openmrs',
+        placeholder: 'https://demo.openmrs.org/openmrs',
         description: 'The base URL of OpenMRS instance',
       },
       {
