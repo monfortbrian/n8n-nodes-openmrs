@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-openmrs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "n8n community node for seamless OpenMRS FHIR integration. Fetch patient demographics, encounters, observations, diagnostic reports, conditions, and medications through standardized FHIR R4 API endpoints.",
   "keywords": [
     "n8n-community-node-package",
@@ -61,7 +61,6 @@
     "n8n-core": "^1.0.0"
   },
   "dependencies": {},
-
   "engines": {
     "node": ">=18.0.0"
   }
