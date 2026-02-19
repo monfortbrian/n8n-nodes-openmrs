@@ -36,7 +36,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc && npm run copy-assets",
-    "copy-assets": "node -p \"require('fs').cpSync('src/nodes/OpenMrs/OpenMrs.svg', 'dist/nodes/OpenMrs/OpenMrs.svg')\"",
+    "copy-assets": "node -e \"const fs=require('fs'); const path=require('path'); const src='src/nodes/OpenMrs/OpenMrs.svg'; const dest='dist/nodes/OpenMrs/OpenMrs.svg'; fs.mkdirSync(path.dirname(dest), {recursive:true}); fs.copyFileSync(src, dest); console.log('Icon copied successfully');\"",
     "dev": "tsc --watch",
     "prepublishOnly": "npm run build"
   },
@@ -55,13 +55,13 @@
     ]
   },
   "devDependencies": {
-    "@types/node": "^25.0.9",
-    "typescript": "^5.9.3"
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0",
+    "n8n-workflow": "^1.0.0",
+    "n8n-core": "^1.0.0"
   },
-  "dependencies": {
-    "n8n-core": "^1.122.9",
-    "n8n-workflow": "^2.4.1"
-  },
+  "dependencies": {},
+
   "engines": {
     "node": ">=18.0.0"
   }
