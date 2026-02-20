@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-openmrs",
-  "version": "1.0.3",
+  "version": "1.0.1",
   "description": "n8n community node for seamless OpenMRS FHIR integration. Fetch patient demographics, encounters, observations, diagnostic reports, conditions, and medications through standardized FHIR R4 API endpoints.",
   "keywords": [
     "n8n-community-node-package",
@@ -20,13 +20,13 @@
     "oncology"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/monfortbrian/n8n-nodes-OpenMRS#readme",
+  "homepage": "https://github.com/monfortbrian/n8n-nodes-openmrs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/monfortbrian/n8n-nodes-OpenMRS.git"
+    "url": "https://github.com/monfortbrian/n8n-nodes-openmrs.git"
   },
   "bugs": {
-    "url": "https://github.com/monfortbrian/n8n-nodes-OpenMRS/issues"
+    "url": "https://github.com/monfortbrian/n8n-nodes-openmrs/issues"
   },
   "author": {
     "name": "Monfort N. Brian",
