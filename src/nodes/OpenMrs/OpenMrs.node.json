@@ -1,0 +1,18 @@
+{
+  "node": "n8n-nodes-openmrs.OpenMrs",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": ["Integration"],
+  "resources": {
+    "credentialDocumentation": [
+      {
+        "url": "https://wiki.openmrs.org/display/docs/REST+API"
+      }
+    ],
+    "primaryDocumentation": [
+      {
+        "url": "https://wiki.openmrs.org/display/docs/FHIR+Module"
+      }
+    ]
+  }
+}
