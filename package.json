@@ -20,13 +20,13 @@
     "oncology"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/monfortbrian/n8n-nodes-OpenMRS#readme",
+  "homepage": "https://github.com/monfortbrian/n8n-nodes-openmrs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/monfortbrian/n8n-nodes-OpenMRS.git"
+    "url": "git+https://github.com/monfortbrian/n8n-nodes-openmrs.git"
   },
   "bugs": {
-    "url": "https://github.com/monfortbrian/n8n-nodes-OpenMRS/issues"
+    "url": "https://github.com/monfortbrian/n8n-nodes-openmrs/issues"
   },
   "author": {
     "name": "Monfort Brian N.",
