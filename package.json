@@ -1,0 +1,69 @@
+{
+	"name": "n8n-nodes-openmrs",
+	"version": "1.1.0",
+	"description": "n8n community node for OpenMRS FHIR R4 integration. Access patient demographics, encounters, observations, diagnostic reports, conditions, and medication statements.",
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n",
+		"n8n-node",
+		"openmrs",
+		"fhir",
+		"healthcare",
+		"ehr",
+		"emr",
+		"medical-records",
+		"clinical-data",
+		"health-informatics",
+		"interoperability",
+		"hl7-fhir",
+		"patient-data",
+		"oncology"
+	],
+	"license": "MIT",
+	"homepage": "https://github.com/monfortbrian/n8n-nodes-openmrs#readme",
+	"author": {
+		"name": "Monfort Brian N.",
+		"email": "monfortnkurunziza0@gmail.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/monfortbrian/n8n-nodes-openmrs.git"
+	},
+	"bugs": {
+		"url": "https://github.com/monfortbrian/n8n-nodes-openmrs/issues"
+	},
+	"main": "index.js",
+	"scripts": {
+		"build": "tsc && npm run copy-assets",
+		"copy-assets": "node -e \"const fs=require('fs'); const path=require('path'); const src='nodes/OpenMrs/openMrs.svg'; const dest='dist/nodes/OpenMrs/openMrs.svg'; fs.mkdirSync(path.dirname(dest), {recursive:true}); fs.copyFileSync(src, dest); const credSrc='credentials/openMrs.svg'; const credDest='dist/credentials/openMrs.svg'; fs.mkdirSync(path.dirname(credDest), {recursive:true}); fs.copyFileSync(credSrc, credDest);\"",
+		"dev": "tsc --watch",
+		"format": "prettier nodes credentials --write",
+		"lint": "eslint nodes credentials --ext .ts",
+		"lintfix": "eslint nodes credentials --ext .ts --fix",
+		"prepublishOnly": "npm run build"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"credentials": [
+			"dist/credentials/OpenMrsApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/OpenMrs/OpenMrs.node.js"
+		]
+	},
+	"devDependencies": {
+		"@types/node": "^20.14.0",
+		"@typescript-eslint/eslint-plugin": "^6.0.0",
+		"@typescript-eslint/parser": "^6.0.0",
+		"eslint": "^8.56.0",
+		"n8n-workflow": "^1.52.0",
+		"prettier": "^3.3.0",
+		"typescript": "^5.3.0"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
