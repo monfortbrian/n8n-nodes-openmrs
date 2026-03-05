@@ -1,47 +1,65 @@
 # n8n-nodes-openmrs
 
-![n8n-nodes-openmrs](https://img.shields.io/npm/v/n8n-nodes-openmrs)
-![npm](https://img.shields.io/npm/dt/n8n-nodes-openmrs)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+[![npm version](https://img.shields.io/npm/v/n8n-nodes-openmrs)](https://www.npmjs.com/package/n8n-nodes-openmrs)
+[![npm downloads](https://img.shields.io/npm/dt/n8n-nodes-openmrs)](https://www.npmjs.com/package/n8n-nodes-openmrs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This is an n8n community node that provides seamless integration with OpenMRS through standardized FHIR R4 API endpoints. It enables healthcare workflows to access and process electronic medical records data for clinical decision support, data analysis, and interoperability.
+Community node for [n8n](https://n8n.io/) providing OpenMRS FHIR R4 integration with intelligent patient search, clinical data access, and healthcare workflow automation.
 
-[n8n](https://n8n.io/) is a fair-code licensed workflow automation platform.
+---
+
+## What's New in v1.2.0
+
+**Smart Patient Search** - No more memorizing UUIDs!
+- Search by OpenMRS ID: `131280865`
+- Search by Name: `Patricia Lewis` (partial matching)
+- Search by Phone: `+254712345678`
+
+---
 
 ## Features
 
-**Comprehensive FHIR R4 Support**
+### Intelligent Patient Lookup
 
-- Access 6 core FHIR resources essential for clinical workflows
-- Standardized healthcare data format for maximum interoperability
+Real-world clinics don't use UUIDs. Search patients the way healthcare workers actually do:
 
-**Patient Data Management**
+- **By Identifier** - OpenMRS ID, National ID, Facility Number
+- **By Name** - First name, last name, or partial matches
+- **By Phone** - Mobile number in any format
+- **By UUID** - For system integrations
 
-- Fetch complete patient demographics and identifiers
-- Retrieve encounter history and visit timelines
-- Access clinical observations (labs, vitals, diagnostics)
+### Complete FHIR R4 Coverage
 
-**Clinical Intelligence**
+Access all essential clinical resources:
 
-- Diagnostic reports and imaging data
-- Condition/diagnosis tracking with staging
-- Medication statements and treatment history
+| Resource | What You Get | Common Use Cases |
+|----------|-------------|------------------|
+| **Patient** | Demographics, identifiers, contacts | Registration, identity verification |
+| **Encounter** | Visits, admissions, consultations | Attendance tracking, visit history |
+| **Observation** | Labs, vitals, diagnostic results | Trend analysis, clinical alerts |
+| **Diagnostic Report** | Imaging, pathology reports | Disease progression tracking |
+| **Condition** | Diagnoses, active problems | Differential diagnosis, comorbidities |
+| **Medication Statement** | Current & past medications | Treatment history, drug interactions |
 
-**Developer-Friendly**
+### Developer-Friendly
 
-- Simple authentication with OpenMRS credentials
-- Paginated results with customizable limits
-- Built-in error handling and retry logic
+- **Simple Auth** - HTTP Basic Authentication
+- **Pagination** - Handle large datasets efficiently
+- **Error Handling** - Clear error messages and continue-on-fail support
+- **Custom API Calls** - Direct access to any OpenMRS FHIR endpoint
 
-**Built for Low-Resource Settings**
+### Built for Global Health
 
-- Optimized for limited bandwidth environments
-- Works with standard OpenMRS installations
+- Optimized for low-bandwidth environments
+- Works with OpenMRS 2.x and 3.x
+- Compatible with DHIS2 workflows
 - Supports both cloud and on-premise deployments
+
+---
 
 ## Installation
 
-### Community Nodes (Recommended)
+### Via n8n Community Nodes (Recommended)
 
 1. Open n8n
 2. Go to **Settings** → **Community Nodes**
@@ -49,319 +67,370 @@ This is an n8n community node that provides seamless integration with OpenMRS th
 4. Enter: `n8n-nodes-openmrs`
 5. Click **Install**
 
-### Manual Installation
-
+### Via npm
 ```bash
 npm install n8n-nodes-openmrs
 ```
 
-For Docker installations:
-
+### From Source
 ```bash
-docker run -it --rm \
-  --name n8n \
-  -p 5678:5678 \
-  -v ~/.n8n:/home/node/.n8n \
-  -e N8N_CUSTOM_EXTENSIONS="/home/node/.n8n/custom" \
-  n8nio/n8n
-```
-
-Then install the package inside the container or mount it as a volume.
-
-### Build from Source
-
-```bash
-git clone https://github.com/monfortbrian/n8n-nodes-OpenMRS.git
+git clone https://github.com/monfortbrian/n8n-nodes-openmrs.git
 cd n8n-nodes-openmrs
 npm install
 npm run build
 npm link
 ```
 
-## Credentials
+---
 
-Before using the OpenMRS node, you need to configure credentials:
+## Quick Start
+
+### 1. Configure Credentials
 
 1. In n8n, go to **Credentials** → **New**
 2. Search for **OpenMRS API**
 3. Configure:
-   - **Base URL**: Your OpenMRS instance URL (e.g., `https://demo.openmrs.org/openmrs`)
-   - **Username**: Your OpenMRS username
-   - **Password**: Your OpenMRS password
+   - **Base URL**: `https://demo.openmrs.org/openmrs` (include `/openmrs`)
+   - **Username**: `admin`
+   - **Password**: `Admin123`
+4. Test & Save
 
-The node uses HTTP Basic Authentication and automatically validates connectivity on save.
+### 2. Search Patient by OpenMRS ID
+```
+Add Node → OpenMRS
+├─ Resource: Patient
+├─ Operation: Search by Identifier
+└─ Identifier: 131280865
+```
 
-## Usage
+**Result:** Complete patient record instantly
 
-### Supported Resources
+### 3. Find Patient by Name
+```
+Add Node → OpenMRS
+├─ Resource: Patient
+├─ Operation: Search by Name
+└─ Name: Patricia
+```
 
-The OpenMRS node provides access to 6 FHIR resources:
+**Result:** All patients with "Patricia" in their name
 
-| Resource                 | Description                   | Use Cases                                    |
-| ------------------------ | ----------------------------- | -------------------------------------------- |
-| **Patient**              | Demographics, identifiers     | Identity verification, cohort analysis       |
-| **Encounter**            | Visits, admissions            | Timeline reconstruction, visit patterns      |
-| **Observation**          | Labs, vitals, diagnostics     | Trend analysis, risk detection               |
-| **Diagnostic Report**    | Imaging, pathology            | Disease progression, treatment response      |
-| **Condition**            | Diagnoses, problem lists      | Differential diagnosis, comorbidity tracking |
-| **Medication Statement** | Active/historical medications | Treatment history, drug interactions         |
-
-### Operations
-
-Each resource supports:
-
-- **Get a resource** - Retrieve a single resource by ID
-- **Get all resources** - Retrieve all resources for a patient (with pagination)
+---
 
 ## Examples
 
-### Example 1: Fetch Patient Demographics
+### Example 1: Patient Search by ID (Real-World)
 
+**Instead of this (nobody remembers):**
 ```
+UUID: 7826f08a-0258-4fb1-ba69-2af192f392db
+```
+
+**Do this:**
+```
+OpenMRS ID: 131280865
+```
+
+**n8n Workflow:**
 1. Add OpenMRS node
-2. Select Resource: Patient
-3. Select Operation: Get a resource
-4. Enter Patient ID: abc-123-def-456
+2. Resource: **Patient**
+3. Operation: **Search by Identifier**
+4. Identifier: `131280865`
 5. Execute
-```
 
-**Output:**
+**Output:** Full patient FHIR record
 
-```json
-{
-  "resourceType": "Patient",
-  "id": "abc-123-def-456",
-  "name": [
-    {
-      "given": ["John"],
-      "family": "Doe"
-    }
-  ],
-  "gender": "male",
-  "birthDate": "1957-03-15"
-}
-```
+---
 
-### Example 2: Retrieve Patient Lab Results
-
+### Example 2: Get Patient Lab Results
 ```
 1. Add OpenMRS node
-2. Select Resource: Observation
-3. Select Operation: Get all resources
-4. Enter Patient ID: abc-123-def-456
-5. Set Limit: 50
+2. Resource: Observation
+3. Operation: Get Many
+4. Patient UUID: 7826f08a-0258-4fb1-ba69-2af192f392db
+5. Limit: 50
 6. Execute
 ```
 
-**Output:** Returns up to 50 lab observations with values, units, and reference ranges.
+**Output:** Up to 50 most recent lab results with values, units, reference ranges
 
-### Example 3: Get Patient Diagnosis History
+---
 
+### Example 3: Track Patient Visit History
 ```
 1. Add OpenMRS node
-2. Select Resource: Condition
-3. Select Operation: Get all resources
-4. Enter Patient ID: abc-123-def-456
-5. Select Return All: true (for complete history)
+2. Resource: Encounter
+3. Operation: Get Many
+4. Patient UUID: 7826f08a-0258-4fb1-ba69-2af192f392db
+5. Return All: true
 6. Execute
 ```
 
-### Example 4: Clinical Decision Support Workflow
+**Output:** Complete visit timeline from first to last encounter
 
-Build an intelligent ASSESS workflow:
+---
 
+### Example 4: Custom FHIR Query
+
+Use the **Custom API Call** resource for advanced queries:
 ```
-[OpenMRS Patient]    ──┐
-[OpenMRS Encounters]   ├─→ [Normalize Data] → [LLM Analysis] → [Alert Doctor]
-[OpenMRS Labs]    ─────┘
-```
-
-This workflow:
-
-1. Fetches patient demographics, encounters, and lab results
-2. Normalizes FHIR data into unified format
-3. Analyzes trends using AI
-4. Generates clinical insights
-
-## Options
-
-### Common Parameters
-
-| Parameter  | Type     | Description                  | Required                  |
-| ---------- | -------- | ---------------------------- | ------------------------- |
-| Resource   | Dropdown | FHIR resource type           | Yes                       |
-| Operation  | Dropdown | Get or Get All               | Yes                       |
-| Patient ID | String   | UUID of the patient          | Yes (for most operations) |
-| Return All | Boolean  | Fetch all results (no limit) | No                        |
-| Limit      | Number   | Max results (1-100)          | No (default: 50)          |
-
-### Resource-Specific Parameters
-
-**Encounter:**
-
-- Encounter ID (for Get operation)
-
-**Condition:**
-
-- Condition ID (for Get operation)
-
-**Medication Statement:**
-
-- Medication Statement ID (for Get operation)
-
-### Pagination
-
-For `Get all resources` operations:
-
-- Set **Return All** to `true` for complete datasets
-- Or set **Limit** to control result size (1-100)
-- Results are returned in FHIR Bundle format
-
-## API Endpoints
-
-This node uses OpenMRS FHIR2 R4 endpoints:
-
-```
-GET /ws/fhir2/R4/Patient/{id}
-GET /ws/fhir2/R4/Patient?_count=50
-
-GET /ws/fhir2/R4/Encounter?patient={id}&_count=50
-
-GET /ws/fhir2/R4/Observation?patient={id}&_count=50
-
-GET /ws/fhir2/R4/DiagnosticReport?patient={id}&_count=50
-
-GET /ws/fhir2/R4/Condition?patient={id}&_count=50
-
-GET /ws/fhir2/R4/MedicationStatement?patient={id}&_count=50
+1. Add OpenMRS node
+2. Resource: Custom API Call
+3. HTTP Method: GET
+4. Endpoint: /ws/fhir2/R4/Patient
+5. Query Parameters:
+   - name: birthdate
+   - value: gt1990-01-01
+6. Execute
 ```
 
-## Use Cases
+**Output:** All patients born after January 1, 1990
 
-### Clinical Decision Support
+---
 
-- Reconstruct patient timelines
-- Detect missed clinical signals
-- Flag abnormal lab trends
-- Track disease progression
+## Real-World Use Cases
+
+### Clinical Workflows
+
+**Patient Admission Dashboard**
+```
+Webhook Trigger
+→ OpenMRS: Search by OpenMRS ID
+→ OpenMRS: Get Encounters (last 6 months)
+→ OpenMRS: Get Observations (recent labs)
+→ Code: Calculate risk scores
+→ Display: Admission summary
+```
+
+**Lost-to-Follow-Up Recovery**
+```
+Schedule (weekly)
+→ OpenMRS: Get All Patients on ART
+→ Code: Filter last visit > 28 days
+→ OpenMRS: Search by Phone
+→ SMS: "Medication ready for pickup"
+→ DHIS2: Update tracker
+```
 
 ### Data Analytics
 
-- Population health analysis
-- Cohort identification
-- Treatment outcome tracking
-- Quality metrics reporting
+**Disease Surveillance**
+```
+Schedule (every 6 hours)
+→ OpenMRS: Get Conditions (last 6h)
+→ Code: Filter cholera, measles, meningitis
+→ Code: Check outbreak threshold
+→ DHIS2: Post to IDSR module
+→ SMS: Alert district officer
+```
 
-### Interoperability
-
-- Sync data between systems
-- Export for external analysis
-- Integration with AI/ML pipelines
-- REDCap or DHIS2 data flows
+**Lab Turnaround Time Monitoring**
+```
+OpenMRS: Observation created
+→ Calculate: Order time - Result time
+→ IF > 48 hours
+  → Alert lab manager
+  → DHIS2: Post performance indicator
+```
 
 ### Global Health
 
-- Low-resource oncology workflows
-- HIV/TB treatment tracking
-- Maternal health monitoring
-- Vaccine registry management
+- HIV/TB treatment adherence tracking
+- Maternal health visit reminders
+- Vaccine defaulter identification
+- Stockout prevention for ARVs
+
+---
+
+## API Reference
+
+### Supported Resources
+
+- `Patient` - Demographics, identifiers
+- `Encounter` - Visits, admissions
+- `Observation` - Labs, vitals, diagnostics
+- `Diagnostic Report` - Imaging, pathology
+- `Condition` - Diagnoses, problems
+- `Medication Statement` - Prescriptions, dispensing
+- `Custom API Call` - Any FHIR endpoint
+
+### Patient Operations
+
+- **Search by Identifier** - OpenMRS ID, National ID
+- **Search by Name** - Partial name matching
+- **Search by Phone** - Phone number search
+- **Get** - Retrieve by UUID
+- **Get Many** - Retrieve all (paginated)
+
+### Other Resource Operations
+
+- **Get** - Retrieve single resource by UUID
+- **Get Many** - Retrieve all for patient (paginated)
+
+### Pagination
+
+All `Get Many` and search operations support:
+- **Return All**: `true/false`
+- **Limit**: `1-100` (default: 50)
+
+---
+
+## FHIR Endpoints Used
+```
+GET /ws/fhir2/R4/Patient?identifier={id}
+GET /ws/fhir2/R4/Patient?name={name}
+GET /ws/fhir2/R4/Patient?telecom={phone}
+GET /ws/fhir2/R4/Patient/{uuid}
+GET /ws/fhir2/R4/Encounter?patient={uuid}&_count=50
+GET /ws/fhir2/R4/Observation?patient={uuid}&_count=50
+GET /ws/fhir2/R4/DiagnosticReport?patient={uuid}&_count=50
+GET /ws/fhir2/R4/Condition?patient={uuid}&_count=50
+GET /ws/fhir2/R4/MedicationStatement?patient={uuid}&_count=50
+```
+
+---
 
 ## Compatibility
 
-- **n8n version:** 0.187.0 or higher
-- **OpenMRS version:** 2.3+ with FHIR2 module installed
-- **Node.js:** 18.0.0 or higher
+- **n8n**: 0.187.0 or higher
+- **OpenMRS**: 2.3+ with FHIR2 module
+- **Node.js**: 18.0.0 or higher
+
+---
+
+## Troubleshooting
+
+### Node doesn't appear
+```bash
+# Check installation
+npm list -g n8n-nodes-openmrs
+
+# Clear cache
+rm -rf ~/.n8n/cache
+
+# Restart n8n
+n8n start
+```
+
+### Authentication fails
+
+- Include `/openmrs` in Base URL
+- Verify credentials in OpenMRS
+- Check FHIR2 module is enabled
+
+### Empty search results
+
+- Patient may not exist with that identifier
+- Try different search criteria
+- Verify FHIR2 module configuration
+
+### Build errors (for developers)
+```bash
+# Clean rebuild
+rm -rf node_modules dist
+npm install
+npm run build
+```
+
+---
 
 ## Development
 
 ### Building
-
 ```bash
-npm run build
-npm run dev
+npm run build      # Compile TypeScript
+npm run dev        # Watch mode
+npm run lint       # Check code quality
+npm run lintfix    # Auto-fix issues
 ```
 
 ### Testing Locally
-
 ```bash
+# Build and link
+npm run build
 npm link
-cd ~/.n8n/custom
-npm link n8n-nodes-openmrs
+
+# Start n8n
 n8n start
+
+# Test in n8n UI
+# Your node appears as "OpenMRS"
 ```
 
-## Troubleshooting
+### Publishing
+```bash
+# Bump version
+npm version minor  # 1.1.0 → 1.2.0
 
-### Node doesn't appear in n8n
+# Publish
+npm publish
 
-1. Verify package is installed: `npm list -g n8n-nodes-openmrs`
-2. Clear n8n cache: `rm -rf ~/.n8n/cache`
-3. Restart n8n
-4. Hard refresh browser (Ctrl+Shift+R)
+# Push to GitHub
+git push origin main --tags
+```
 
-### Authentication errors
-
-- Verify Base URL includes `/openmrs` path (e.g., `https://demo.openmrs.org/openmrs`)
-- Confirm username/password are correct
-- Check OpenMRS FHIR2 module is installed and enabled
-
-### Empty results
-
-- Confirm patient UUID exists in your OpenMRS instance
-- Verify patient has data for the requested resource type
-- Check FHIR2 module configuration in OpenMRS
-
-## Resources
-
-- [OpenMRS Documentation](https://wiki.openmrs.org/)
-- [FHIR R4 Specification](https://hl7.org/fhir/R4/)
-- [n8n Community Nodes](https://docs.n8n.io/integrations/community-nodes/)
-- [OpenMRS FHIR2 Module](https://wiki.openmrs.org/display/projects/FHIR+Module)
+---
 
 ## Contributing
 
-Contributions are welcome! Please:
+Contributions welcome! Please:
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push: `git push origin feature/amazing-feature`
+5. Open Pull Request
+
+---
+
+## Changelog
+
+### [1.2.0] - 2026-03-05
+
+**Added**
+- Patient search by OpenMRS ID/identifier
+- Patient search by name (partial matching)
+- Patient search by phone number
+- Custom API Call resource for advanced queries
+
+**Changed**
+- Improved error messages
+- Better TypeScript types
+- Updated documentation
+
+### [1.1.0] - 2026-03-03
+
+**Added**
+- 6 FHIR resources (Patient, Encounter, Observation, etc.)
+- Get and Get Many operations
+- Pagination support
+
+### [1.0.0] - 2026-03-01
+
+**Added**
+- Initial release
+- Basic FHIR R4 support
+
+---
 
 ## License
 
 [MIT License](LICENSE)
 
-Copyright (c) 2026 Monfort N. Brian
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-## Support
-
-- **Issues:** [GitHub Issues](https://github.com/monfortbrian/n8n-nodes-OpenMRS/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/monfortbrian/n8n-nodes-OpenMRS/discussions)
-- **n8n Community:** [n8n Community Forum](https://community.n8n.io/)
-
-## Acknowledgments
-
-Built for healthcare workers in low-resource settings. Designed to enable clinical decision support and improve patient outcomes through better data interoperability.
+Copyright © 2026 Monfort Brian N.
 
 ---
 
-**Made with ❤️ for the global health community**
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/monfortbrian/n8n-nodes-openmrs/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/monfortbrian/n8n-nodes-openmrs/discussions)
+- **n8n Community**: [n8n Forum](https://community.n8n.io/)
+
+---
+
+## Acknowledgments
+
+Built for healthcare workers in low-resource settings. Enabling better patient outcomes through data interoperability and workflow automation.
+
+**Made with ❤️ for global health**
