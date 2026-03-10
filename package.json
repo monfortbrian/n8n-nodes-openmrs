@@ -18,7 +18,7 @@
 		"hl7-fhir",
 		"patient-data",
 		"oncology"
-	],
+		],
 	"license": "MIT",
 	"homepage": "https://github.com/monfortbrian/n8n-nodes-openmrs#readme",
 	"author": {
@@ -32,21 +32,20 @@
 	"bugs": {
 		"url": "https://github.com/monfortbrian/n8n-nodes-openmrs/issues"
 	},
-	"main": "index.js",
 	"scripts": {
-		"build": "tsc && npm run copy-assets",
-		"copy-assets": "node -e \"const fs=require('fs'); const path=require('path'); const src='nodes/OpenMrs/openMrs.svg'; const dest='dist/nodes/OpenMrs/openMrs.svg'; fs.mkdirSync(path.dirname(dest), {recursive:true}); fs.copyFileSync(src, dest); const credSrc='credentials/openMrs.svg'; const credDest='dist/credentials/openMrs.svg'; fs.mkdirSync(path.dirname(credDest), {recursive:true}); fs.copyFileSync(credSrc, credDest);\"",
-		"dev": "tsc --watch",
-		"format": "prettier nodes credentials --write",
-		"lint": "eslint nodes credentials --ext .ts",
-		"lintfix": "eslint nodes credentials --ext .ts --fix",
-		"prepublishOnly": "npm run build"
+		"build": "n8n-node build",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
 	},
 	"files": [
 		"dist"
 	],
 	"n8n": {
 		"n8nNodesApiVersion": 1,
+		"strict": true,
 		"credentials": [
 			"dist/credentials/OpenMrsApi.credentials.js"
 		],
@@ -55,13 +54,12 @@
 		]
 	},
 	"devDependencies": {
-		"@types/node": "^20.14.0",
-		"@typescript-eslint/eslint-plugin": "^6.0.0",
-		"@typescript-eslint/parser": "^6.0.0",
-		"eslint": "^8.56.0",
-		"n8n-workflow": "^1.52.0",
-		"prettier": "^3.3.0",
-		"typescript": "^5.3.0"
+		"@n8n/node-cli": "*",
+		"eslint": "9.32.0",
+		"n8n-workflow": "*",
+		"prettier": "3.6.2",
+		"release-it": "^19.0.4",
+		"typescript": "5.9.2"
 	},
 	"peerDependencies": {
 		"n8n-workflow": "*"

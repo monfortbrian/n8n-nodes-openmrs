@@ -9,6 +9,7 @@ import type {
 import { NodeOperationError } from 'n8n-workflow';
 
 export class OpenMrs implements INodeType {
+	usableAsTool = true;
 	description: INodeTypeDescription = {
 		displayName: 'OpenMRS',
 		name: 'openMrs',
@@ -37,12 +38,12 @@ export class OpenMrs implements INodeType {
 				noDataExpression: true,
 				options: [
 					{ name: 'Condition', value: 'condition' },
+					{ name: 'Custom API Call', value: 'customApiCall' },
 					{ name: 'Diagnostic Report', value: 'diagnosticReport' },
 					{ name: 'Encounter', value: 'encounter' },
 					{ name: 'Medication Statement', value: 'medicationStatement' },
 					{ name: 'Observation', value: 'observation' },
 					{ name: 'Patient', value: 'patient' },
-					{ name: 'Custom API Call', value: 'customApiCall' },
 				],
 				default: 'patient',
 			},
@@ -60,6 +61,18 @@ export class OpenMrs implements INodeType {
 				},
 				options: [
 					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get a patient by UUID',
+						action: 'Get a patient',
+					},
+					{
+						name: 'Get Many',
+						value: 'getAll',
+						description: 'Get many patients',
+						action: 'Get many patients',
+					},
+					{
 						name: 'Search by Identifier',
 						value: 'searchByIdentifier',
 						description: 'Search patient by OpenMRS ID or National ID',
@@ -76,18 +89,6 @@ export class OpenMrs implements INodeType {
 						value: 'searchByPhone',
 						description: 'Search patient by phone number',
 						action: 'Search patient by phone',
-					},
-					{
-						name: 'Get',
-						value: 'get',
-						description: 'Get a patient by UUID',
-						action: 'Get a patient',
-					},
-					{
-						name: 'Get Many',
-						value: 'getAll',
-						description: 'Get all patients',
-						action: 'Get many patients',
 					},
 				],
 				default: 'searchByIdentifier',
@@ -293,10 +294,10 @@ export class OpenMrs implements INodeType {
 					},
 				},
 				options: [
+					{ name: 'DELETE', value: 'DELETE' },
 					{ name: 'GET', value: 'GET' },
 					{ name: 'POST', value: 'POST' },
 					{ name: 'PUT', value: 'PUT' },
-					{ name: 'DELETE', value: 'DELETE' },
 				],
 				default: 'GET',
 				description: 'The HTTP method to use',
@@ -404,6 +405,7 @@ export class OpenMrs implements INodeType {
 				description: 'Max number of results to return',
 			},
 		],
+		usableAsTool: true,
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
@@ -461,7 +463,7 @@ export class OpenMrs implements INodeType {
 						},
 					);
 
-					returnData.push({ json: response as IDataObject });
+					returnData.push({ json: response as IDataObject, pairedItem: { item: i } });
 					continue;
 				}
 
@@ -537,7 +539,7 @@ export class OpenMrs implements INodeType {
 				// Process response
 				if (Array.isArray(response)) {
 					returnData.push(
-						...response.map((item: IDataObject) => ({ json: item })),
+						...response.map((item: IDataObject) => ({ json: item, pairedItem: { item: i } })),
 					);
 				} else if (response.entry) {
 					const entries = response.entry as Array<{ resource: IDataObject }>;
@@ -551,16 +553,15 @@ export class OpenMrs implements INodeType {
 					}
 
 					returnData.push(
-						...entries.map((entry) => ({ json: entry.resource })),
+						...entries.map((entry) => ({ json: entry.resource, pairedItem: { item: i } })),
 					);
 				} else {
-					returnData.push({ json: response as IDataObject });
+					returnData.push({ json: response as IDataObject, pairedItem: { item: i } });
 				}
 			} catch (error) {
 				if (this.continueOnFail()) {
-					const errorMessage =
-						error instanceof Error ? error.message : 'Unknown error';
-					returnData.push({ json: { error: errorMessage } });
+					const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+					returnData.push({ json: { error: errorMessage }, pairedItem: { item: i } });
 					continue;
 				}
 				throw new NodeOperationError(

@@ -8,6 +8,7 @@ import type {
 export class OpenMrsApi implements ICredentialType {
 	name = 'openMrsApi';
 	displayName = 'OpenMRS API';
+	icon = { light: 'file:openMrs.svg', dark: 'file:openMrs.svg' } as const;
 	documentationUrl = 'https://wiki.openmrs.org/display/projects/FHIR+Module';
 
 	properties: INodeProperties[] = [
