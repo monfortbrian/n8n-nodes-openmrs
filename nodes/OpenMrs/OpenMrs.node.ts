@@ -30,7 +30,7 @@ export class OpenMrs implements INodeType {
 			},
 		],
 		properties: [
-			// Resource Selection
+			// ===== RESOURCE =====
 			{
 				displayName: 'Resource',
 				name: 'resource',
@@ -48,18 +48,20 @@ export class OpenMrs implements INodeType {
 				default: 'patient',
 			},
 
-			// Patient Operations (with search)
+			// ===== PATIENT OPERATIONS =====
 			{
 				displayName: 'Operation',
 				name: 'operation',
 				type: 'options',
 				noDataExpression: true,
-				displayOptions: {
-					show: {
-						resource: ['patient'],
-					},
-				},
+				displayOptions: { show: { resource: ['patient'] } },
 				options: [
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Register a new patient',
+						action: 'Create a patient',
+					},
 					{
 						name: 'Get',
 						value: 'get',
@@ -94,7 +96,37 @@ export class OpenMrs implements INodeType {
 				default: 'searchByIdentifier',
 			},
 
-			// Other Resources Operations (no search)
+			// ===== ENCOUNTER OPERATIONS =====
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: { show: { resource: ['encounter'] } },
+				options: [
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a new encounter for a patient',
+						action: 'Create an encounter',
+					},
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get an encounter by UUID',
+						action: 'Get an encounter',
+					},
+					{
+						name: 'Get Many',
+						value: 'getAll',
+						description: 'Get many encounters for a patient',
+						action: 'Get many encounters',
+					},
+				],
+				default: 'get',
+			},
+
+			// ===== OTHER RESOURCE OPERATIONS =====
 			{
 				displayName: 'Operation',
 				name: 'operation',
@@ -102,43 +134,33 @@ export class OpenMrs implements INodeType {
 				noDataExpression: true,
 				displayOptions: {
 					show: {
-						resource: [
-							'encounter',
-							'observation',
-							'diagnosticReport',
-							'condition',
-							'medicationStatement',
-						],
+						resource: ['observation', 'diagnosticReport', 'condition', 'medicationStatement'],
 					},
 				},
 				options: [
 					{
 						name: 'Get',
 						value: 'get',
-						description: 'Get a resource by ID',
+						description: 'Get a resource by UUID',
 						action: 'Get a resource',
 					},
 					{
 						name: 'Get Many',
 						value: 'getAll',
-						description: 'Get many resources',
+						description: 'Get many resources for a patient',
 						action: 'Get many resources',
 					},
 				],
 				default: 'get',
 			},
 
-			// Custom API Call Operation
+			// ===== CUSTOM API CALL OPERATION =====
 			{
 				displayName: 'Operation',
 				name: 'operation',
 				type: 'options',
 				noDataExpression: true,
-				displayOptions: {
-					show: {
-						resource: ['customApiCall'],
-					},
-				},
+				displayOptions: { show: { resource: ['customApiCall'] } },
 				options: [
 					{
 						name: 'Custom API Call',
@@ -150,33 +172,45 @@ export class OpenMrs implements INodeType {
 				default: 'customApiCall',
 			},
 
-			// Search Parameters
+			// ===== PATIENT CREATE FIELDS =====
+			{
+				displayName: 'Patient (FHIR JSON)',
+				name: 'patientPayload',
+				type: 'json',
+				required: true,
+				displayOptions: { show: { resource: ['patient'], operation: ['create'] } },
+				default: '{\n  "resourceType": "Patient",\n  "identifier": [\n    {\n      "system": "http://openmrs.org/identifier",\n      "value": "PATIENT-001"\n    }\n  ],\n  "name": [\n    {\n      "family": "Doe",\n      "given": ["John"]\n    }\n  ],\n  "gender": "male",\n  "birthDate": "1990-01-01",\n  "telecom": [\n    {\n      "system": "phone",\n      "value": "+250788123456"\n    }\n  ]\n}',
+				description: 'Full FHIR Patient resource. Must include resourceType, name, gender, birthDate.',
+			},
+
+			// ===== ENCOUNTER CREATE FIELDS =====
+			{
+				displayName: 'Encounter (FHIR JSON)',
+				name: 'encounterPayload',
+				type: 'json',
+				required: true,
+				displayOptions: { show: { resource: ['encounter'], operation: ['create'] } },
+				default: '{\n  "resourceType": "Encounter",\n  "status": "finished",\n  "class": {\n    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",\n    "code": "AMB",\n    "display": "ambulatory"\n  },\n  "subject": {\n    "reference": "Patient/PATIENT_UUID"\n  },\n  "period": {\n    "start": "2026-06-02T08:00:00+00:00",\n    "end": "2026-06-02T09:00:00+00:00"\n  },\n  "type": [\n    {\n      "coding": [\n        {\n          "system": "http://snomed.info/sct",\n          "code": "11429006",\n          "display": "Consultation"\n        }\n      ]\n    }\n  ]\n}',
+				description: 'Full FHIR Encounter resource. Must include resourceType, status, class, subject (Patient reference), and period.',
+			},
+
+			// ===== SEARCH FIELDS =====
 			{
 				displayName: 'Identifier',
 				name: 'identifier',
 				type: 'string',
 				required: true,
-				displayOptions: {
-					show: {
-						resource: ['patient'],
-						operation: ['searchByIdentifier'],
-					},
-				},
+				displayOptions: { show: { resource: ['patient'], operation: ['searchByIdentifier'] } },
 				default: '',
 				placeholder: '131280865',
-				description: 'OpenMRS ID or National ID (e.g., 131280865)',
+				description: 'OpenMRS ID or National ID',
 			},
 			{
 				displayName: 'Name',
 				name: 'name',
 				type: 'string',
 				required: true,
-				displayOptions: {
-					show: {
-						resource: ['patient'],
-						operation: ['searchByName'],
-					},
-				},
+				displayOptions: { show: { resource: ['patient'], operation: ['searchByName'] } },
 				default: '',
 				placeholder: 'Patricia Lewis',
 				description: 'Patient name (supports partial matching)',
@@ -186,29 +220,19 @@ export class OpenMrs implements INodeType {
 				name: 'phone',
 				type: 'string',
 				required: true,
-				displayOptions: {
-					show: {
-						resource: ['patient'],
-						operation: ['searchByPhone'],
-					},
-				},
+				displayOptions: { show: { resource: ['patient'], operation: ['searchByPhone'] } },
 				default: '',
 				placeholder: '+254712345678',
 				description: 'Phone number in any format',
 			},
 
-			// UUID Parameters for Get operations
+			// ===== GET BY UUID FIELDS =====
 			{
 				displayName: 'Patient ID',
 				name: 'patientId',
 				type: 'string',
 				required: true,
-				displayOptions: {
-					show: {
-						resource: ['patient'],
-						operation: ['get'],
-					},
-				},
+				displayOptions: { show: { resource: ['patient'], operation: ['get'] } },
 				default: '',
 				description: 'The UUID of the patient',
 			},
@@ -217,12 +241,7 @@ export class OpenMrs implements INodeType {
 				name: 'encounterId',
 				type: 'string',
 				required: true,
-				displayOptions: {
-					show: {
-						resource: ['encounter'],
-						operation: ['get'],
-					},
-				},
+				displayOptions: { show: { resource: ['encounter'], operation: ['get'] } },
 				default: '',
 				description: 'The UUID of the encounter',
 			},
@@ -231,12 +250,7 @@ export class OpenMrs implements INodeType {
 				name: 'observationId',
 				type: 'string',
 				required: true,
-				displayOptions: {
-					show: {
-						resource: ['observation'],
-						operation: ['get'],
-					},
-				},
+				displayOptions: { show: { resource: ['observation'], operation: ['get'] } },
 				default: '',
 				description: 'The UUID of the observation',
 			},
@@ -245,12 +259,7 @@ export class OpenMrs implements INodeType {
 				name: 'diagnosticReportId',
 				type: 'string',
 				required: true,
-				displayOptions: {
-					show: {
-						resource: ['diagnosticReport'],
-						operation: ['get'],
-					},
-				},
+				displayOptions: { show: { resource: ['diagnosticReport'], operation: ['get'] } },
 				default: '',
 				description: 'The UUID of the diagnostic report',
 			},
@@ -259,12 +268,7 @@ export class OpenMrs implements INodeType {
 				name: 'conditionId',
 				type: 'string',
 				required: true,
-				displayOptions: {
-					show: {
-						resource: ['condition'],
-						operation: ['get'],
-					},
-				},
+				displayOptions: { show: { resource: ['condition'], operation: ['get'] } },
 				default: '',
 				description: 'The UUID of the condition',
 			},
@@ -273,26 +277,17 @@ export class OpenMrs implements INodeType {
 				name: 'medicationStatementId',
 				type: 'string',
 				required: true,
-				displayOptions: {
-					show: {
-						resource: ['medicationStatement'],
-						operation: ['get'],
-					},
-				},
+				displayOptions: { show: { resource: ['medicationStatement'], operation: ['get'] } },
 				default: '',
 				description: 'The UUID of the medication statement',
 			},
 
-			// Custom API Call Parameters
+			// ===== CUSTOM API CALL FIELDS =====
 			{
 				displayName: 'HTTP Method',
 				name: 'httpMethod',
 				type: 'options',
-				displayOptions: {
-					show: {
-						resource: ['customApiCall'],
-					},
-				},
+				displayOptions: { show: { resource: ['customApiCall'] } },
 				options: [
 					{ name: 'DELETE', value: 'DELETE' },
 					{ name: 'GET', value: 'GET' },
@@ -307,11 +302,7 @@ export class OpenMrs implements INodeType {
 				name: 'endpoint',
 				type: 'string',
 				required: true,
-				displayOptions: {
-					show: {
-						resource: ['customApiCall'],
-					},
-				},
+				displayOptions: { show: { resource: ['customApiCall'] } },
 				default: '/ws/fhir2/R4/Patient',
 				placeholder: '/ws/fhir2/R4/Patient',
 				description: 'The API endpoint (e.g., /ws/fhir2/R4/Patient)',
@@ -320,14 +311,8 @@ export class OpenMrs implements INodeType {
 				displayName: 'Query Parameters',
 				name: 'queryParameters',
 				type: 'fixedCollection',
-				typeOptions: {
-					multipleValues: true,
-				},
-				displayOptions: {
-					show: {
-						resource: ['customApiCall'],
-					},
-				},
+				typeOptions: { multipleValues: true },
+				displayOptions: { show: { resource: ['customApiCall'] } },
 				default: {},
 				placeholder: 'Add Parameter',
 				options: [
@@ -352,7 +337,7 @@ export class OpenMrs implements INodeType {
 				],
 			},
 
-			// Patient ID Filter for Get Many
+			// ===== GET MANY PATIENT FILTER =====
 			{
 				displayName: 'Patient ID',
 				name: 'patientIdFilter',
@@ -360,13 +345,7 @@ export class OpenMrs implements INodeType {
 				required: true,
 				displayOptions: {
 					show: {
-						resource: [
-							'encounter',
-							'observation',
-							'diagnosticReport',
-							'condition',
-							'medicationStatement',
-						],
+						resource: ['encounter', 'observation', 'diagnosticReport', 'condition', 'medicationStatement'],
 						operation: ['getAll'],
 					},
 				},
@@ -374,7 +353,7 @@ export class OpenMrs implements INodeType {
 				description: 'The UUID of the patient to filter results by',
 			},
 
-			// Pagination
+			// ===== PAGINATION =====
 			{
 				displayName: 'Return All',
 				name: 'returnAll',
@@ -397,10 +376,7 @@ export class OpenMrs implements INodeType {
 						returnAll: [false],
 					},
 				},
-				typeOptions: {
-					minValue: 1,
-					maxValue: 100,
-				},
+				typeOptions: { minValue: 1, maxValue: 100 },
 				default: 50,
 				description: 'Max number of results to return',
 			},
@@ -412,7 +388,7 @@ export class OpenMrs implements INodeType {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 		const credentials = await this.getCredentials('openMrsApi');
-		const baseUrl = credentials.baseUrl as string;
+		const baseUrl = (credentials.baseUrl as string).replace(/\/$/, '');
 
 		const fhirResourceMap: Record<string, string> = {
 			patient: 'Patient',
@@ -440,7 +416,9 @@ export class OpenMrs implements INodeType {
 				let endpoint = '';
 				const qs: IDataObject = {};
 
-				// Custom API Call
+				// ----------------------------------------------------------------
+				// Custom API Call returns early
+				// ----------------------------------------------------------------
 				if (resource === 'customApiCall') {
 					const httpMethod = this.getNodeParameter('httpMethod', i) as IHttpRequestMethods;
 					endpoint = this.getNodeParameter('endpoint', i) as string;
@@ -467,64 +445,103 @@ export class OpenMrs implements INodeType {
 					continue;
 				}
 
-				// Regular resources
-				const fhirResource = fhirResourceMap[resource];
+				// ----------------------------------------------------------------
+				// Patient: Create POST, returns early
+				// ----------------------------------------------------------------
+				if (resource === 'patient' && operation === 'create') {
+					const raw = this.getNodeParameter('patientPayload', i) as string;
+					const body = JSON.parse(typeof raw === 'string' ? raw : JSON.stringify(raw)) as IDataObject;
 
-				// Get operation
+					const response = await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'openMrsApi',
+						{
+							method: 'POST',
+							url: `${baseUrl}/ws/fhir2/R4/Patient`,
+							body,
+							json: true,
+						},
+					);
+
+					returnData.push({ json: response as IDataObject, pairedItem: { item: i } });
+					continue;
+				}
+
+				// ----------------------------------------------------------------
+				// Encounter: Create POST, returns early
+				// ----------------------------------------------------------------
+				if (resource === 'encounter' && operation === 'create') {
+					const raw = this.getNodeParameter('encounterPayload', i) as string;
+					const body = JSON.parse(typeof raw === 'string' ? raw : JSON.stringify(raw)) as IDataObject;
+
+					const response = await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'openMrsApi',
+						{
+							method: 'POST',
+							url: `${baseUrl}/ws/fhir2/R4/Encounter`,
+							body,
+							json: true,
+						},
+					);
+
+					returnData.push({ json: response as IDataObject, pairedItem: { item: i } });
+					continue;
+				}
+
+				// ----------------------------------------------------------------
+				// Get by UUID
+				// ----------------------------------------------------------------
 				if (operation === 'get') {
 					const idParam = resourceIdParamMap[resource];
 					const resourceId = this.getNodeParameter(idParam, i) as string;
+					const fhirResource = fhirResourceMap[resource];
 					endpoint = `/ws/fhir2/R4/${fhirResource}/${resourceId}`;
 				}
-				// Search by Identifier
+
+				// ----------------------------------------------------------------
+				// Search operations (Patient only)
+				// ----------------------------------------------------------------
 				else if (operation === 'searchByIdentifier') {
 					const identifier = this.getNodeParameter('identifier', i) as string;
-					endpoint = `/ws/fhir2/R4/Patient`;
+					endpoint = '/ws/fhir2/R4/Patient';
 					qs.identifier = identifier;
-
 					const returnAll = this.getNodeParameter('returnAll', i, false) as boolean;
-					if (!returnAll) {
-						qs._count = this.getNodeParameter('limit', i, 50) as number;
-					}
+					if (!returnAll) qs._count = this.getNodeParameter('limit', i, 50) as number;
 				}
-				// Search by Name
 				else if (operation === 'searchByName') {
 					const name = this.getNodeParameter('name', i) as string;
-					endpoint = `/ws/fhir2/R4/Patient`;
+					endpoint = '/ws/fhir2/R4/Patient';
 					qs.name = name;
-
 					const returnAll = this.getNodeParameter('returnAll', i, false) as boolean;
-					if (!returnAll) {
-						qs._count = this.getNodeParameter('limit', i, 50) as number;
-					}
+					if (!returnAll) qs._count = this.getNodeParameter('limit', i, 50) as number;
 				}
-				// Search by Phone
 				else if (operation === 'searchByPhone') {
 					const phone = this.getNodeParameter('phone', i) as string;
-					endpoint = `/ws/fhir2/R4/Patient`;
+					endpoint = '/ws/fhir2/R4/Patient';
 					qs.telecom = phone;
-
 					const returnAll = this.getNodeParameter('returnAll', i, false) as boolean;
-					if (!returnAll) {
-						qs._count = this.getNodeParameter('limit', i, 50) as number;
-					}
+					if (!returnAll) qs._count = this.getNodeParameter('limit', i, 50) as number;
 				}
-				// Get All operation
+
+				// ----------------------------------------------------------------
+				// Get Many
+				// ----------------------------------------------------------------
 				else if (operation === 'getAll') {
+					const fhirResource = fhirResourceMap[resource];
 					endpoint = `/ws/fhir2/R4/${fhirResource}`;
 
 					if (resource !== 'patient') {
-						const patientId = this.getNodeParameter('patientIdFilter', i) as string;
-						qs.patient = patientId;
+						qs.patient = this.getNodeParameter('patientIdFilter', i) as string;
 					}
 
 					const returnAll = this.getNodeParameter('returnAll', i) as boolean;
-					if (!returnAll) {
-						qs._count = this.getNodeParameter('limit', i) as number;
-					}
+					if (!returnAll) qs._count = this.getNodeParameter('limit', i) as number;
 				}
 
-				// Make HTTP request
+				// ----------------------------------------------------------------
+				// Shared GET handler
+				// ----------------------------------------------------------------
 				const response = await this.helpers.httpRequestWithAuthentication.call(
 					this,
 					'openMrsApi',
@@ -536,14 +553,12 @@ export class OpenMrs implements INodeType {
 					},
 				);
 
-				// Process response
 				if (Array.isArray(response)) {
 					returnData.push(
 						...response.map((item: IDataObject) => ({ json: item, pairedItem: { item: i } })),
 					);
 				} else if (response.entry) {
 					const entries = response.entry as Array<{ resource: IDataObject }>;
-
 					if (entries.length === 0) {
 						throw new NodeOperationError(
 							this.getNode(),
@@ -551,7 +566,6 @@ export class OpenMrs implements INodeType {
 							{ itemIndex: i },
 						);
 					}
-
 					returnData.push(
 						...entries.map((entry) => ({ json: entry.resource, pairedItem: { item: i } })),
 					);
@@ -560,8 +574,10 @@ export class OpenMrs implements INodeType {
 				}
 			} catch (error) {
 				if (this.continueOnFail()) {
-					const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-					returnData.push({ json: { error: errorMessage }, pairedItem: { item: i } });
+					returnData.push({
+						json: { error: error instanceof Error ? error.message : 'Unknown error' },
+						pairedItem: { item: i },
+					});
 					continue;
 				}
 				throw new NodeOperationError(
