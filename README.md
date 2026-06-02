@@ -4,18 +4,19 @@
 [![npm downloads](https://img.shields.io/npm/dt/n8n-nodes-openmrs)](https://www.npmjs.com/package/n8n-nodes-openmrs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-n8n community node for [OpenMRS](https://openmrs.org) FHIR R4 API. Register patients, create encounters, search clinical records, and build interoperability.
+n8n community node for [OpenMRS](https://openmrs.org) FHIR R4 API. Register patients, create encounters, search clinical records, and connect OpenMRS to DHIS2, RapidPro, and other health systems.
+
 [n8n](https://n8n.io/) is a fair-code licensed workflow automation platform.
 
 ---
 
 ## Installation
 
-**Via n8n UI:** Search DHIS2 as verified node or simply go to Settings → Community Nodes → `n8n-nodes-dhis2`
+**Via n8n UI:** Settings → Community Nodes → search `n8n-nodes-openmrs` → Install
 
 **Via npm:**
 ```bash
-npm install n8n-nodes-dhis2
+npm install n8n-nodes-openmrs
 ```
 
 ---
@@ -24,11 +25,11 @@ npm install n8n-nodes-dhis2
 
 | Field    | Description |
 |----------|-------------|
-| Base URL | Your OpenMRS instance including `/openmrs` (e.g. `https://demo.openmrs.org/openmrs`) |
+| Base URL | Your OpenMRS instance including `/openmrs` (e.g. `https://o3.openmrs.org/openmrs`) |
 | Username | OpenMRS username |
 | Password | OpenMRS password |
 
-Demo: `https://demo.openmrs.org/openmrs` — username `admin`, password `Admin123`
+Demo: `https://o3.openmrs.org/openmrs` username `admin`, password `Admin123`
 
 ---
 
@@ -48,10 +49,7 @@ Demo: `https://demo.openmrs.org/openmrs` — username `admin`, password `Admin12
 
 ## Example: Register a Patient
 
-```
-Resource:   Patient
-Operation:  Create
-Payload:
+```json
 {
   "resourceType": "Patient",
   "identifier": [{ "system": "http://openmrs.org/identifier", "value": "CASE-001" }],
@@ -68,10 +66,7 @@ Returns the created FHIR Patient resource including the assigned OpenMRS UUID.
 
 ## Example: Create an Encounter
 
-```
-Resource:   Encounter
-Operation:  Create
-Payload:
+```json
 {
   "resourceType": "Encounter",
   "status": "finished",
@@ -101,11 +96,9 @@ GET  /ws/fhir2/R4/Patient/{uuid}
 GET  /ws/fhir2/R4/Patient?identifier={id}
 GET  /ws/fhir2/R4/Patient?name={name}
 GET  /ws/fhir2/R4/Patient?telecom={phone}
-
 POST /ws/fhir2/R4/Encounter
 GET  /ws/fhir2/R4/Encounter/{uuid}
 GET  /ws/fhir2/R4/Encounter?patient={uuid}&_count=50
-
 GET  /ws/fhir2/R4/Observation?patient={uuid}&_count=50
 GET  /ws/fhir2/R4/DiagnosticReport?patient={uuid}&_count=50
 GET  /ws/fhir2/R4/Condition?patient={uuid}&_count=50
@@ -116,46 +109,37 @@ GET  /ws/fhir2/R4/MedicationStatement?patient={uuid}&_count=50
 
 ## Resources
 
-- [DHIS2 Documentation](https://docs.dhis2.org/)
-- [DHIS2 Web API Guide](https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-master/introduction.html)
-- [DHIS2 Demo Server](https://play.dhis2.org)
+- [OpenMRS Documentation](https://wiki.openmrs.org/)
+- [OpenMRS FHIR2 Module](https://wiki.openmrs.org/display/projects/FHIR+Module)
+- [OpenMRS REST API](https://rest.openmrs.org/)
 - [n8n Community Nodes](https://docs.n8n.io/integrations/community-nodes/)
-- [OpenMRS n8n Node](https://www.npmjs.com/package/n8n-nodes-openmrs) clinical data from OpenMRS
-- [RapidPro n8n Node](https://www.npmjs.com/package/n8n-nodes-rapidpro) messaging workflows via RapidPro
+- [n8n-nodes-dhis2](https://www.npmjs.com/package/n8n-nodes-dhis2) DHIS2 integration
+- [n8n-nodes-rapidpro](https://www.npmjs.com/package/n8n-nodes-rapidpro) RapidPro messaging
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please:
-
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## License
-
-[MIT License](LICENSE)
-
-Copyright (c) 2026 [Monfort Brian N.](https://github.com/monfortbrian)
+2. Create a feature branch: `git checkout -b feat/your-feature`
+3. Commit: `git commit -m 'feat(openmrs): your change'`
+4. Push and open a Pull Request
 
 ---
 
 ## Support
 
-- **Issues:** [GitHub Issues](https://github.com/monfortbrian/n8n-nodes-dhis2/issues)
-- **n8n Community:** [n8n Community Forum](https://community.n8n.io/)
+- **Issues:** [GitHub Issues](https://github.com/monfortbrian/n8n-nodes-openmrs/issues)
+- **n8n Community:** [community.n8n.io](https://community.n8n.io/)
+
+---
+
+## License
+
+[MIT](LICENSE) © 2026 [Monfort Brian N. | 宁俊](https://github.com/monfortbrian)
 
 ---
 
 ## Acknowledgments
 
-Built for healthcare workers in low-resource settings. Enabling better patient outcomes through data interoperability and workflow automation.
-
----
-
-**Made with ❤️ for the global health community**
+Built to connect clinical systems to national health information infrastructure. Part of an open-source interoperability stack for outbreak response and healthcare orchestration across low-resource settings.
