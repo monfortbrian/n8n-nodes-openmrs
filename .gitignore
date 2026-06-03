@@ -30,6 +30,3 @@ npm-debug.log*
 # Test files (if you have them)
 test.js
 copy-icons.js
-
-# Config files
-tsconfig.json
