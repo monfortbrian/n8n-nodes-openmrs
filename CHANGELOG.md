@@ -7,6 +7,12 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.3.6] - 2026-06-08
+
+### Fixed
+- Resolved CI publishing pipeline. v1.3.2 through v1.3.5 were failed GitHub Actions attempts due to missing package-lock.json, ignored tsconfig.json, prepublishOnly hook blocking publish, and npm token 2FA requirements. v1.3.6 is the first version published with full npm provenance via GitHub Actions.
+- GitHub Actions workflow updated: Node.js 24 compatibility, `--ignore-scripts` flag, correct action versions.
+
 ## [1.3.1] - 2026-06-02
 
 ### Fixed
